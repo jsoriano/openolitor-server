@@ -21,11 +21,21 @@ import scalariform.formatter.preferences._
 import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 
-
+val requiredJavaV = "1.8" // value of java.specification.version property
 val specs2V = "2.4.17" // based on spray 1.3.x built in support
 val akkaV = "2.4.+"
 val sprayV = "1.3.+"
 val scalalikeV = "3.1.+"
+
+initialize := {
+  val _ = initialize.value
+  val currentJavaV = sys.props("java.specification.version")
+  if (currentJavaV != requiredJavaV) {
+    val log = sLog.value
+    log.error(s"JDK $requiredJavaV required, $currentJavaV is being used")
+    System.exit(-1)
+  }
+}
 
 resolvers += Resolver.typesafeRepo("releases")
 
